@@ -3,7 +3,7 @@ import pandas as pd
 import unicodedata
 
 # -----------------------
-# Configuración página
+# Configuración de página
 # -----------------------
 st.set_page_config(
     page_title="Territoriales CESAC 42",
@@ -21,9 +21,6 @@ def normalizar_texto(texto):
     texto = "".join(c for c in texto if unicodedata.category(c) != "Mn")
     return texto
 
-def normalizar_columna(col):
-    return normalizar_texto(col).replace(" ", "")
-
 def altura_en_rango(valor_csv, altura_ingresada):
     valor = str(valor_csv).strip()
 
@@ -39,22 +36,17 @@ def altura_en_rango(valor_csv, altura_ingresada):
 # -----------------------
 @st.cache_data
 def cargar_datos():
-    # 👇 separador correcto
     df = pd.read_csv(
         "DOMICILIO Y TERRITORIAL - Hoja 2.csv",
-        sep=";",
-        encoding="utf-8"
+        skiprows=1,          # salta la fila basura ",,"
+        encoding="utf-8-sig"
     )
 
-    # Normalizar nombres de columnas
-    columnas_norm = {col: normalizar_columna(col) for col in df.columns}
-    df = df.rename(columns=columnas_norm)
-
-    # Validación
-    requeridas = {"calle", "altura", "equipoterritorial"}
-    if not requeridas.issubset(df.columns):
-        st.error(f"Columnas encontradas: {list(df.columns)}")
-        st.stop()
+    df = df.rename(columns={
+        "CALLE": "calle",
+        "ALTURA": "altura",
+        "EQUIPO TERRITORIAL": "equipo"
+    })
 
     df["calle_norm"] = df["calle"].apply(normalizar_texto)
     return df
@@ -79,7 +71,7 @@ if buscar:
     for _, fila in df.iterrows():
         if fila["calle_norm"] == calle_norm:
             if altura_en_rango(fila["altura"], int(altura_input)):
-                st.success(f"Equipo territorial: {fila['equipoterritorial']}")
+                st.success(f"Equipo territorial: {fila['equipo']}")
                 encontrado = True
                 break
 
