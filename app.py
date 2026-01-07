@@ -21,6 +21,10 @@ def normalizar_texto(texto):
     texto = "".join(c for c in texto if unicodedata.category(c) != "Mn")
     return texto
 
+def normalizar_visual(texto):
+    # Fuerza Ñ y acentos reales (NFC)
+    return unicodedata.normalize("NFC", str(texto))
+
 def altura_en_rango(valor_csv, altura_ingresada):
     valor = str(valor_csv).strip()
 
@@ -48,13 +52,16 @@ def cargar_datos():
         "EQUIPO TERRITORIAL": "equipo"
     })
 
+    # Normalizaciones
+    df["calle"] = df["calle"].apply(normalizar_visual)
     df["calle_norm"] = df["calle"].apply(normalizar_texto)
+
     return df
 
 df = cargar_datos()
 
 # -----------------------
-# SELECTBOX CON BÚSQUEDA INTEGRADA
+# SELECTBOX CON AUTOCOMPLETADO
 # -----------------------
 st.subheader("Buscar domicilio")
 
