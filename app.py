@@ -60,6 +60,8 @@ def cargar_datos():
     df["calle"] = df["calle"].apply(normalizar_visual)
     df["calle_norm"] = df["calle"].apply(normalizar_texto)
 
+    df["calle"] = df["calle"].astype(str).apply(arreglar_encoding)
+
     return df
 
 df = cargar_datos()
@@ -101,4 +103,5 @@ if buscar:
 
         if not encontrado:
             st.error("FUERA DE ÁREA")
+
 
