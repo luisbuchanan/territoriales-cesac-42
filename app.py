@@ -13,27 +13,31 @@ st.set_page_config(
 st.title("Buscador Territorial – CESAC 42")
 
 # -----------------------
-# Funciones auxiliares
+# FUNCIONES AUXILIARES
 # -----------------------
+
+def arreglar_encoding(texto):
+    """
+    Corrige textos mal decodificados desde Excel
+    Ej: 'AlbarracÃ­n' -> 'Albarracín'
+    """
+    try:
+        return texto.encode("latin1").decode("utf-8")
+    except:
+        return texto
+
+
 def normalizar_texto(texto):
+    """
+    Normaliza texto para búsquedas:
+    - minúsculas
+    - sin tildes
+    - sin ñ
+    """
     texto = str(texto).strip().lower()
     texto = unicodedata.normalize("NFD", texto)
     texto = "".join(c for c in texto if unicodedata.category(c) != "Mn")
     return texto
-
-def normalizar_visual(texto):
-    # Fuerza Ñ y acentos reales (NFC)
-    return unicodedata.normalize("NFC", str(texto))
-
-def altura_en_rango(valor_csv, altura_ingresada):
-    valor = str(valor_csv).strip()
-
-    if "-" in valor:
-        desde, hasta = map(int, valor.split("-"))
-        return desde <= altura_ingresada <= (hasta + 99)
-    else:
-        desde = int(valor)
-        return desde <= altura_ingresada <= (desde + 99)
 
 # -----------------------
 # Carga de datos
@@ -97,3 +101,4 @@ if buscar:
 
         if not encontrado:
             st.error("FUERA DE ÁREA")
+
