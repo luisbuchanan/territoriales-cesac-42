@@ -13,31 +13,23 @@ st.set_page_config(
 st.title("Buscador Territorial – CESAC 42")
 
 # -----------------------
-# FUNCIONES AUXILIARES
+# Funciones auxiliares
 # -----------------------
-
-def arreglar_encoding(texto):
-    """
-    Corrige textos mal decodificados desde Excel
-    Ej: 'AlbarracÃ­n' -> 'Albarracín'
-    """
-    try:
-        return texto.encode("latin1").decode("utf-8")
-    except:
-        return texto
-
-
 def normalizar_texto(texto):
-    """
-    Normaliza texto para búsquedas:
-    - minúsculas
-    - sin tildes
-    - sin ñ
-    """
     texto = str(texto).strip().lower()
     texto = unicodedata.normalize("NFD", texto)
     texto = "".join(c for c in texto if unicodedata.category(c) != "Mn")
     return texto
+
+def altura_en_rango(valor_csv, altura_ingresada):
+    valor = str(valor_csv).strip()
+
+    if "-" in valor:
+        desde, hasta = map(int, valor.split("-"))
+        return desde <= altura_ingresada <= (hasta + 99)
+    else:
+        desde = int(valor)
+        return desde <= altura_ingresada <= (desde + 99)
 
 # -----------------------
 # Carga de datos
@@ -47,7 +39,7 @@ def cargar_datos():
     df = pd.read_csv(
         "DOMICILIO Y TERRITORIAL - Hoja 2.csv",
         skiprows=1,
-        encoding="utf-8-sig"
+        encoding="utf-8"
     )
 
     df = df.rename(columns={
@@ -56,18 +48,15 @@ def cargar_datos():
         "EQUIPO TERRITORIAL": "equipo"
     })
 
-    # Normalizaciones
-    df["calle"] = df["calle"].apply(normalizar_visual)
+    df["calle"] = df["calle"].astype(str)
     df["calle_norm"] = df["calle"].apply(normalizar_texto)
-
-    df["calle"] = df["calle"].astype(str).apply(arreglar_encoding)
 
     return df
 
 df = cargar_datos()
 
 # -----------------------
-# SELECTBOX CON AUTOCOMPLETADO
+# Interfaz
 # -----------------------
 st.subheader("Buscar domicilio")
 
@@ -85,7 +74,7 @@ altura_input = st.number_input("Altura", min_value=0, step=1)
 buscar = st.button("Buscar")
 
 # -----------------------
-# BÚSQUEDA
+# Búsqueda
 # -----------------------
 if buscar:
     if not calle_seleccionada:
@@ -103,5 +92,3 @@ if buscar:
 
         if not encontrado:
             st.error("FUERA DE ÁREA")
-
-
