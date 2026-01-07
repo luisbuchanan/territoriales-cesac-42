@@ -1,16 +1,16 @@
-,,
+﻿,,
 CALLE,ALTURA,EQUIPO TERRITORIAL
 Adolfo Saldias,2200,4 - Sur
 Alagon,1 - 100,4 - Sur
-Albarracín,1400 - 1800,2 - Oeste
-Albarracín,1900 - 2000,4 - Sur
+AlbarracÃ­n,1400 - 1800,2 - Oeste
+AlbarracÃ­n,1900 - 2000,4 - Sur
 Arquimedes,2100 - 2400,4 - Sur
 Av. Asamblea, 2 - 400 PAR,1 - Norte
 Av. Asamblea,1 - 400  IMPAR,2 - Oeste
 Av. Boedo,1100 - 1400 IMPAR,1 - Norte
 Av. Boedo,1500 - 1900 IMPAR,3 - Este
 Av. Caseros,3600 - 4100 IMPAR,3 - Este
-Av. Castañares,1000 PAR,2 - Oeste
+Av. CastaÃ±ares,1000 PAR,2 - Oeste
 Av. Chiclana,3700 - 3800,3 - Este
 Av. Chiclana,3900 - 4200 IMPAR,4 - Sur
 Av. Cobo,500 - 1100,4 - Sur
@@ -19,15 +19,15 @@ Av. Del Barco Centenera,1800 - 2500 PAR,4 - Sur
 Av. Fernandez de la Cruz,800 - 1400 IMPAR,4 - Sur
 Av. Garay,3600 - 4300 PAR,1 - Norte
 Av. Garay,3600 - 4300 IMPAR,3 - Este
-Av. José María Moreno,1300 - 1700,2 - Oeste
-Av. José María Moreno,1800 - 1900,4 - Sur
+Av. JosÃ© MarÃ­a Moreno,1300 - 1700,2 - Oeste
+Av. JosÃ© MarÃ­a Moreno,1800 - 1900,4 - Sur
 Av. La Plata,1100 - 1300,1 - Norte
 Av. La Plata,1400 PAR,1 - Norte
 Av. La Plata,1400 - 1900 IMPAR,2 - Oeste
 Av. La Plata,1500 - 2100 PAR,3 - Este
 Av. La Plata,2000 - 2100 IMPAR,4 - Sur
 Av. La Plata,2200 - 2300,4 - Sur
-Av. Pavón ,3600 - 4300,1 - Norte
+Av. PavÃ³n ,3600 - 4300,1 - Norte
 Av. Riestra,1100 - 1500,4 - Sur
 Av. Vernet ,1 - 300,2 - Oeste
 Avelino Diaz,300 - 900,2 - Oeste
@@ -45,8 +45,8 @@ Castro Barros,1600 - 2200,3 - Este
 Chilavert,1000 - 1600,4 - Sur
 Cochabamba,3600 - 4300,1 - Norte
 Colombres,1100 - 1400,1 - Norte
-Constitución,3600 - 4300,1 - Norte
-Del Bañado,2100 - 2400,4 - Sur
+ConstituciÃ³n,3600 - 4300,1 - Norte
+Del BaÃ±ado,2100 - 2400,4 - Sur
 Del Barco Centenera,1400 - 1700 PAR,2 - Oeste
 Doblas,1000 - 1200,1 - Norte
 Doblas,1300 - 1800,2 - Oeste
@@ -57,10 +57,10 @@ Fournier,2100 - 2300,4 - Sur
 Gibson,3900 - 4200,3 - Este
 Gomez Somavilla,2000,4 - Sur
 Gual,2200 - 2300,4 - Sur
-Inclán,3600 - 4300,3 - Este
+InclÃ¡n,3600 - 4300,3 - Este
 Ing. Carlos Echague,1200 - 1300,4 - Sur
-José Marmol,1100 - 1400,1 - Norte
-José Marmol,1500 - 2100,3 - Este
+JosÃ© Marmol,1100 - 1400,1 - Norte
+JosÃ© Marmol,1500 - 2100,3 - Este
 Juan Bautista Alberdi,1900 - 2100,3 - Este
 La Capital,1100,4 - Sur
 Lanza,2100 - 2500,4 - Sur
@@ -68,8 +68,8 @@ Las Casas,3600 - 4100,3 - Este
 Lugo,1100,4 - Sur
 Marcos Seguin,2100 - 2500,4 - Sur
 Metan,3700 - 4200,3 - Este
-Muñiz,1200 - 1500,1 - Norte
-Muñiz,1600 - 2100,3 - Este
+MuÃ±iz,1200 - 1500,1 - Norte
+MuÃ±iz,1600 - 2100,3 - Este
 Natal,2300 - 2500,4 - Sur
 Padre Lorenzo,1100 - 1200,1 - Norte
 Pereyra,1500,1 - Norte
@@ -99,7 +99,7 @@ Trole,1,4 - Sur
 Viel,1000 - 1200,1 - Norte
 Viel,1300 - 1800,2 - Oeste
 Viel,1900 - 2000,4 - Sur
-Zañartu,400 - 1000 IMPAR,2 - Oeste
-Zañartu,400 - 1000 PAR,4 - Sur
-Zelarrayán,500 - 1100,4 - Sur
-Zuviría,1 - 400,1 - Norte
+ZaÃ±artu,400 - 1000 IMPAR,2 - Oeste
+ZaÃ±artu,400 - 1000 PAR,4 - Sur
+ZelarrayÃ¡n,500 - 1100,4 - Sur
+ZuvirÃ­a,1 - 400,1 - Norte
