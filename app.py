@@ -38,7 +38,7 @@ def altura_en_rango(valor_csv, altura_ingresada):
 def cargar_datos():
     df = pd.read_csv(
         "DOMICILIO Y TERRITORIAL - Hoja 2.csv",
-        skiprows=1,          # salta la fila basura ",,"
+        skiprows=1,
         encoding="utf-8-sig"
     )
 
@@ -54,26 +54,51 @@ def cargar_datos():
 df = cargar_datos()
 
 # -----------------------
-# Interfaz
+# AUTOCOMPLETADO DE CALLES
 # -----------------------
-calle_input = st.text_input("Calle")
+st.subheader("Buscar domicilio")
+
+texto_busqueda = st.text_input("Buscar calle")
+
+calles_unicas = sorted(df["calle"].unique())
+
+if texto_busqueda:
+    texto_norm = normalizar_texto(texto_busqueda)
+
+    opciones = [
+        c for c in calles_unicas
+        if texto_norm in normalizar_texto(c)
+    ]
+else:
+    opciones = []
+
+calle_seleccionada = st.selectbox(
+    "Seleccionar calle",
+    options=opciones,
+    index=None,
+    placeholder="Escribí arriba para ver opciones"
+)
+
 altura_input = st.number_input("Altura", min_value=0, step=1)
 
 buscar = st.button("Buscar")
 
 # -----------------------
-# Búsqueda
+# BÚSQUEDA FINAL
 # -----------------------
 if buscar:
-    calle_norm = normalizar_texto(calle_input)
-    encontrado = False
+    if not calle_seleccionada:
+        st.warning("Seleccioná una calle")
+    else:
+        calle_norm = normalizar_texto(calle_seleccionada)
+        encontrado = False
 
-    for _, fila in df.iterrows():
-        if fila["calle_norm"] == calle_norm:
-            if altura_en_rango(fila["altura"], int(altura_input)):
-                st.success(f"Equipo territorial: {fila['equipo']}")
-                encontrado = True
-                break
+        for _, fila in df.iterrows():
+            if fila["calle_norm"] == calle_norm:
+                if altura_en_rango(fila["altura"], int(altura_input)):
+                    st.success(f"Equipo territorial: {fila['equipo']}")
+                    encontrado = True
+                    break
 
-    if not encontrado:
-        st.error("FUERA DE ÁREA")
+        if not encontrado:
+            st.error("FUERA DE ÁREA")
