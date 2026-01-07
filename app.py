@@ -31,13 +31,6 @@ def altura_en_rango(valor_csv, altura_ingresada):
         desde = int(valor)
         return desde <= altura_ingresada <= (desde + 99)
 
-def normalizar_columnas(df):
-    nuevas = {}
-    for col in df.columns:
-        col_norm = normalizar_texto(col)
-        nuevas[col] = col_norm
-    return df.rename(columns=nuevas)
-
 # -----------------------
 # Carga de datos
 # -----------------------
@@ -45,14 +38,12 @@ def normalizar_columnas(df):
 def cargar_datos():
     df = pd.read_csv("DOMICILIO Y TERRITORIAL - Hoja 2.csv")
 
-    # normaliza nombres de columnas
-    df = normalizar_columnas(df)
-
-    # chequeos mínimos
-    columnas_necesarias = {"calle", "altura", "equipo territorial"}
-    if not columnas_necesarias.issubset(set(df.columns)):
-        st.error("El CSV no tiene las columnas esperadas.")
-        st.stop()
+    # Renombrar columnas a nombres internos seguros
+    df = df.rename(columns={
+        "CALLE": "calle",
+        "ALTURA": "altura",
+        "EQUIPO TERRITORIAL": "equipo"
+    })
 
     df["calle_norm"] = df["calle"].apply(normalizar_texto)
     return df
@@ -77,7 +68,7 @@ if buscar:
     for _, fila in df.iterrows():
         if fila["calle_norm"] == calle_norm:
             if altura_en_rango(fila["altura"], int(altura_input)):
-                st.success(f"Equipo territorial: {fila['equipo territorial']}")
+                st.success(f"Equipo territorial: {fila['equipo']}")
                 encontrado = True
                 break
 
