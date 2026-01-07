@@ -39,15 +39,20 @@ def altura_en_rango(valor_csv, altura_ingresada):
 # -----------------------
 @st.cache_data
 def cargar_datos():
-    df = pd.read_csv("DOMICILIO Y TERRITORIAL - Hoja 2.csv")
+    # 👇 separador correcto
+    df = pd.read_csv(
+        "DOMICILIO Y TERRITORIAL - Hoja 2.csv",
+        sep=";",
+        encoding="utf-8"
+    )
 
-    # Normalizar nombres de columnas (anti BOM / espacios / tildes)
+    # Normalizar nombres de columnas
     columnas_norm = {col: normalizar_columna(col) for col in df.columns}
     df = df.rename(columns=columnas_norm)
 
-    # Mapeo esperado
-    # calle, altura, equipoterritorial
-    if not {"calle", "altura", "equipoterritorial"}.issubset(df.columns):
+    # Validación
+    requeridas = {"calle", "altura", "equipoterritorial"}
+    if not requeridas.issubset(df.columns):
         st.error(f"Columnas encontradas: {list(df.columns)}")
         st.stop()
 
