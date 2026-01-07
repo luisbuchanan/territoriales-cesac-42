@@ -54,29 +54,17 @@ def cargar_datos():
 df = cargar_datos()
 
 # -----------------------
-# AUTOCOMPLETADO DE CALLES
+# SELECTBOX CON BÚSQUEDA INTEGRADA
 # -----------------------
 st.subheader("Buscar domicilio")
 
-texto_busqueda = st.text_input("Buscar calle")
-
 calles_unicas = sorted(df["calle"].unique())
 
-if texto_busqueda:
-    texto_norm = normalizar_texto(texto_busqueda)
-
-    opciones = [
-        c for c in calles_unicas
-        if texto_norm in normalizar_texto(c)
-    ]
-else:
-    opciones = []
-
 calle_seleccionada = st.selectbox(
-    "Seleccionar calle",
-    options=opciones,
+    "Calle",
+    options=calles_unicas,
     index=None,
-    placeholder="Escribí arriba para ver opciones"
+    placeholder="Escribí el nombre de la calle"
 )
 
 altura_input = st.number_input("Altura", min_value=0, step=1)
@@ -84,7 +72,7 @@ altura_input = st.number_input("Altura", min_value=0, step=1)
 buscar = st.button("Buscar")
 
 # -----------------------
-# BÚSQUEDA FINAL
+# BÚSQUEDA
 # -----------------------
 if buscar:
     if not calle_seleccionada:
