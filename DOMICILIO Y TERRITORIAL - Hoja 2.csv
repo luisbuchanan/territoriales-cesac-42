@@ -2,8 +2,8 @@
 CALLE,ALTURA,EQUIPO TERRITORIAL
 Adolfo Saldias,2200,4 - Sur
 Alagon,1 - 100,4 - Sur
-Albarracín,1400 - 1800,2 - Oeste
-Albarracín,1900 - 2000,4 - Sur
+Albarracin,1400 - 1800,2 - Oeste
+Albarracin,1900 - 2000,4 - Sur
 Arquimedes,2100 - 2400,4 - Sur
 Av. Asamblea, 2 - 400 PAR,1 - Norte
 Av. Asamblea,1 - 400  IMPAR,2 - Oeste
@@ -103,3 +103,4 @@ Zañartu,400 - 1000 IMPAR,2 - Oeste
 Zañartu,400 - 1000 PAR,4 - Sur
 Zelarrayán,500 - 1100,4 - Sur
 Zuviría,1 - 400,1 - Norte
+
