@@ -21,6 +21,9 @@ def normalizar_texto(texto):
     texto = "".join(c for c in texto if unicodedata.category(c) != "Mn")
     return texto
 
+def normalizar_columna(col):
+    return normalizar_texto(col).replace(" ", "")
+
 def altura_en_rango(valor_csv, altura_ingresada):
     valor = str(valor_csv).strip()
 
@@ -38,12 +41,15 @@ def altura_en_rango(valor_csv, altura_ingresada):
 def cargar_datos():
     df = pd.read_csv("DOMICILIO Y TERRITORIAL - Hoja 2.csv")
 
-    # Renombrar columnas a nombres internos seguros
-    df = df.rename(columns={
-        "CALLE": "calle",
-        "ALTURA": "altura",
-        "EQUIPO TERRITORIAL": "equipo"
-    })
+    # Normalizar nombres de columnas (anti BOM / espacios / tildes)
+    columnas_norm = {col: normalizar_columna(col) for col in df.columns}
+    df = df.rename(columns=columnas_norm)
+
+    # Mapeo esperado
+    # calle, altura, equipoterritorial
+    if not {"calle", "altura", "equipoterritorial"}.issubset(df.columns):
+        st.error(f"Columnas encontradas: {list(df.columns)}")
+        st.stop()
 
     df["calle_norm"] = df["calle"].apply(normalizar_texto)
     return df
@@ -68,7 +74,7 @@ if buscar:
     for _, fila in df.iterrows():
         if fila["calle_norm"] == calle_norm:
             if altura_en_rango(fila["altura"], int(altura_input)):
-                st.success(f"Equipo territorial: {fila['equipo']}")
+                st.success(f"Equipo territorial: {fila['equipoterritorial']}")
                 encontrado = True
                 break
 
