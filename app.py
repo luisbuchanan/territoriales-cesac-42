@@ -90,21 +90,25 @@ altura_input = st.text_input("Altura")
 # Lógica principal
 # =========================
 
-if calle_input and altura_input.isdigit():
-    altura_input = int(altura_input)
-
-    calle_norm = normalizar_texto(calle_input)
-
-    df_calle = df[df["calle_norm"] == calle_norm]
-
-    equipo_encontrado = None
-
-    for _, fila in df_calle.iterrows():
-        if altura_en_rango(fila["altura"], altura_input):
-            equipo_encontrado = fila["equipo"]
-            break
-
-    if equipo_encontrado:
-        st.success(f"Equipo territorial: {equipo_encontrado}")
+if st.button("Buscar"):
+    if not calle_input or not altura_input.isdigit():
+        st.warning("Ingresá una calle y una altura válida")
     else:
-        st.error("FUERA DE ÁREA")
+        altura_input = int(altura_input)
+
+        calle_norm = normalizar_texto(calle_input)
+
+        df_calle = df[df["calle_norm"].str.contains(calle_norm, na=False)]
+
+        equipo_encontrado = None
+
+        for _, fila in df_calle.iterrows():
+            if altura_en_rango(fila["altura"], altura_input):
+                equipo_encontrado = fila["equipo"]
+                break
+
+        if equipo_encontrado:
+            st.success(f"Equipo territorial: {equipo_encontrado}")
+        else:
+            st.error("FUERA DE ÁREA")
+
