@@ -22,25 +22,36 @@ def altura_en_rango(valor_csv, altura_ingresada):
         texto = str(valor_csv).upper().strip()
         es_par = altura_ingresada % 2 == 0
 
-        if "PAR" in texto:
-            if not es_par:
-                return False
-            texto = texto.replace("PAR", "").strip()
+        # Detectar paridad pedida por la fila
+        pide_par = "PAR" in texto
+        pide_impar = "IMPAR" in texto
 
-        if "IMPAR" in texto:
-            if es_par:
-                return False
-            texto = texto.replace("IMPAR", "").strip()
+        if pide_par and not es_par:
+            return False
+        if pide_impar and es_par:
+            return False
 
+        # Limpiar texto
+        texto = texto.replace("PAR", "").replace("IMPAR", "").strip()
+
+        # CASO 1: rango explícito (2100 - 2199)
         if " - " in texto:
             desde, hasta = texto.split(" - ")
             return int(desde) <= altura_ingresada <= int(hasta)
-        else:
-            desde = int(texto)
-            return desde <= altura_ingresada <= (desde + 99)
+
+        # CASO 2: altura base (2100 / 2101)
+        base = int(texto)
+
+        # El rango lógico siempre es base → base + 99
+        if not (base <= altura_ingresada <= base + 99):
+            return False
+
+        # Si hay paridad, ya fue validada arriba
+        return True
 
     except:
         return False
+
 
 # =========================
 # Carga de datos
@@ -108,4 +119,5 @@ if buscar:
             st.success(f"Equipo territorial: {equipo_encontrado}")
         else:
             st.error("FUERA DE ÁREA")
+
 
