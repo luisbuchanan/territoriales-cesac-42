@@ -22,14 +22,39 @@ def normalizar_texto(texto):
     return texto
 
 def altura_en_rango(valor_csv, altura_ingresada):
-    valor = str(valor_csv).strip()
+    try:
+        texto = str(valor_csv).upper().strip()
 
-    if "-" in valor:
-        desde, hasta = map(int, valor.split("-"))
-        return desde <= altura_ingresada <= (hasta + 99)
-    else:
-        desde = int(valor)
-        return desde <= altura_ingresada <= (desde + 99)
+        # Detectar paridad
+        solo_par = "PAR" in texto
+        solo_impar = "IMPAR" in texto
+
+        # Quitar palabras
+        texto = (
+            texto.replace("PAR", "")
+                 .replace("IMPAR", "")
+                 .strip()
+        )
+
+        # Verificar paridad del número ingresado
+        if solo_par and altura_ingresada % 2 != 0:
+            return False
+        if solo_impar and altura_ingresada % 2 == 0:
+            return False
+
+        # Rango o número
+        if "-" in texto:
+            desde, hasta = texto.split("-")
+            desde = int(desde.strip())
+            hasta = int(hasta.strip())
+            return desde <= altura_ingresada <= (hasta + 99)
+        else:
+            desde = int(texto)
+            return desde <= altura_ingresada <= (desde + 99)
+
+    except:
+        return False
+
 
 # -----------------------
 # Carga de datos
@@ -92,3 +117,4 @@ if buscar:
 
         if not encontrado:
             st.error("FUERA DE ÁREA")
+
