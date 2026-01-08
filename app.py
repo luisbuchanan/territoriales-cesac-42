@@ -20,34 +20,37 @@ def altura_en_rango(texto_altura, altura):
     """
     Reglas:
     - 1 - 400  => hasta 499
-    - 2000 - 2100 => hasta 21099
+    - 2000 - 2100 => hasta 2199
     - PAR / IMPAR se aplica dentro del rango
     """
     try:
         t = str(texto_altura).upper()
 
-        # Paridad
-        if "PAR" in t and altura % 2 != 0:
+        # Detectar PAR / IMPAR como palabras completas
+        es_par = altura % 2 == 0
+
+        if re.search(r"\bPAR\b", t) and not es_par:
             return False
-        if "IMPAR" in t and altura % 2 == 0:
+        if re.search(r"\bIMPAR\b", t) and es_par:
             return False
 
         nums = re.findall(r"\d+", t)
 
         if len(nums) == 2:
             desde = int(nums[0])
-            hasta = int(nums[1]) * 10 + 9
+            hasta = int(nums[1]) + 99
             return desde <= altura <= hasta
 
         if len(nums) == 1:
             desde = int(nums[0])
-            hasta = desde * 10 + 9
+            hasta = desde + 99
             return desde <= altura <= hasta
 
         return False
 
     except:
         return False
+
 
 # -----------------------------
 # CARGA CSV ROBUSTA
@@ -114,3 +117,4 @@ if buscar or altura > 0:
             st.success(f"Equipo territorial: **{resultado}**")
         else:
             st.error("FUERA DE ÁREA")
+
