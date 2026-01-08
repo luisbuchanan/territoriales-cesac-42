@@ -2,52 +2,43 @@ import streamlit as st
 import pandas as pd
 import unicodedata
 
-# -----------------------
-# Configuración de página
-# -----------------------
-st.set_page_config(
-    page_title="Territoriales CESAC 42",
-    layout="centered"
-)
+st.set_page_config(page_title="Territoriales CESAC 42")
 
-st.title("Buscador Territorial – CESAC 42")
-
-# -----------------------
+# =========================
 # Funciones auxiliares
-# -----------------------
+# =========================
+
 def normalizar_texto(texto):
-    texto = str(texto).strip().lower()
+    if pd.isna(texto):
+        return ""
+    texto = str(texto)
     texto = unicodedata.normalize("NFD", texto)
     texto = "".join(c for c in texto if unicodedata.category(c) != "Mn")
-    return texto
+    return texto.upper().strip()
 
 def altura_en_rango(valor_csv, altura_ingresada):
     try:
         texto = str(valor_csv).upper().strip()
 
-        # Detectar paridad
-        solo_par = "PAR" in texto
-        solo_impar = "IMPAR" in texto
+        es_par = altura_ingresada % 2 == 0
 
-        # Quitar palabras
-        texto = (
-            texto.replace("PAR", "")
-                 .replace("IMPAR", "")
-                 .strip()
-        )
+        # Par / Impar
+        if "PAR" in texto:
+            if not es_par:
+                return False
+            texto = texto.replace("PAR", "").strip()
 
-        # Verificar paridad del número ingresado
-        if solo_par and altura_ingresada % 2 != 0:
-            return False
-        if solo_impar and altura_ingresada % 2 == 0:
-            return False
+        if "IMPAR" in texto:
+            if es_par:
+                return False
+            texto = texto.replace("IMPAR", "").strip()
 
         # Rango o número
         if "-" in texto:
             desde, hasta = texto.split("-")
             desde = int(desde.strip())
             hasta = int(hasta.strip())
-            return desde <= altura_ingresada <= (hasta + 99)
+            return desde <= altura_ingresada <= hasta
         else:
             desde = int(texto)
             return desde <= altura_ingresada <= (desde + 99)
@@ -55,66 +46,65 @@ def altura_en_rango(valor_csv, altura_ingresada):
     except:
         return False
 
-
-# -----------------------
+# =========================
 # Carga de datos
-# -----------------------
+# =========================
+
 @st.cache_data
 def cargar_datos():
     df = pd.read_csv(
         "DOMICILIO Y TERRITORIAL - Hoja 2.csv",
-        skiprows=1,
-        encoding="utf-8"
+        encoding="utf-8",
+        header=None
     )
 
-    df = df.rename(columns={
-        "CALLE": "calle",
-        "ALTURA": "altura",
-        "EQUIPO TERRITORIAL": "equipo"
-    })
+    # Nos quedamos solo con las 3 columnas reales
+    df = df.iloc[:, :3]
+    df.columns = ["calle", "altura", "equipo"]
 
-    df["calle"] = df["calle"].astype(str)
+    # Normalización para búsqueda
     df["calle_norm"] = df["calle"].apply(normalizar_texto)
 
     return df
 
 df = cargar_datos()
 
-# -----------------------
+# =========================
 # Interfaz
-# -----------------------
-st.subheader("Buscar domicilio")
+# =========================
 
-calles_unicas = sorted(df["calle"].unique())
+st.title("Asignación de Equipo Territorial")
 
-calle_seleccionada = st.selectbox(
+calles_unicas = sorted(df["calle"].dropna().unique())
+
+calle_input = st.selectbox(
     "Calle",
     options=calles_unicas,
     index=None,
-    placeholder="Escribí el nombre de la calle"
+    placeholder="Escribí el nombre de la calle..."
 )
 
-altura_input = st.number_input("Altura", min_value=0, step=1)
+altura_input = st.text_input("Altura")
 
-buscar = st.button("Buscar")
+# =========================
+# Lógica principal
+# =========================
 
-# -----------------------
-# Búsqueda
-# -----------------------
-if buscar:
-    if not calle_seleccionada:
-        st.warning("Seleccioná una calle")
+if calle_input and altura_input.isdigit():
+    altura_input = int(altura_input)
+
+    calle_norm = normalizar_texto(calle_input)
+
+    df_calle = df[df["calle_norm"] == calle_norm]
+
+    equipo_encontrado = None
+
+    for _, fila in df_calle.iterrows():
+        if altura_en_rango(fila["altura"], altura_input):
+            equipo_encontrado = fila["equipo"]
+            break
+
+    if equipo_encontrado:
+        st.success(f"Equipo territorial: {equipo_encontrado}")
     else:
-        calle_norm = normalizar_texto(calle_seleccionada)
-        encontrado = False
-
-        for _, fila in df.iterrows():
-            if fila["calle_norm"] == calle_norm:
-                if altura_en_rango(fila["altura"], int(altura_input)):
-                    st.success(f"Equipo territorial: {fila['equipo']}")
-                    encontrado = True
-                    break
-
-        if not encontrado:
-            st.error("FUERA DE ÁREA")
-
+        st.error("FUERA DE ÁREA")
