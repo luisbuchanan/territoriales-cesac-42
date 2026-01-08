@@ -3,121 +3,94 @@ import pandas as pd
 import unicodedata
 import re
 
-# ----------------------------
-# CONFIG
-# ----------------------------
-st.set_page_config(
-    page_title="Territoriales CESAC 42",
-    layout="centered"
-)
-
+st.set_page_config(page_title="Territoriales CESAC 42", layout="centered")
 st.title("Territoriales CESAC 42")
-st.write("Buscador de equipo territorial por calle y altura")
 
-# ----------------------------
-# FUNCIONES AUXILIARES
-# ----------------------------
+# -----------------------------
+# UTILIDADES
+# -----------------------------
 
-def normalizar(texto: str) -> str:
-    """
-    Normaliza para comparar:
-    - sin tildes
-    - sin mayúsculas
-    """
-    texto = str(texto)
-    texto = unicodedata.normalize("NFD", texto)
-    texto = "".join(c for c in texto if unicodedata.category(c) != "Mn")
-    return texto.lower().strip()
+def normalizar(txt):
+    txt = str(txt)
+    txt = unicodedata.normalize("NFD", txt)
+    txt = "".join(c for c in txt if unicodedata.category(c) != "Mn")
+    return txt.lower().strip()
 
+def parse_desde(altura_txt):
+    nums = re.findall(r"\d+", str(altura_txt))
+    return int(nums[0]) if nums else 0
 
-def altura_en_rango(valor_csv, altura):
-    """
-    Reglas:
-    - PAR / IMPAR filtran
-    - El rango NO corta hacia arriba
-    - El número menor indica desde dónde empieza a aplicar
-    """
-    try:
-        texto = str(valor_csv).upper().strip()
-        es_par = altura % 2 == 0
-
-        # PAR / IMPAR
-        if "PAR" in texto and not es_par:
-            return False
-        if "IMPAR" in texto and es_par:
-            return False
-
-        texto = texto.replace("PAR", "").replace("IMPAR", "").strip()
-
-        # Caso rango: "2000 - 2100"
-        if " - " in texto:
-            desde = int(texto.split(" - ")[0])
-            return altura >= desde
-
-        # Caso número solo: "1200"
-        return altura >= int(texto)
-
-    except:
+def coincide_paridad(altura_txt, altura):
+    txt = str(altura_txt).upper()
+    if "PAR" in txt and altura % 2 != 0:
         return False
+    if "IMPAR" in txt and altura % 2 == 0:
+        return False
+    return True
 
+# -----------------------------
+# CARGA ROBUSTA CSV
+# -----------------------------
 
 @st.cache_data
 def cargar_datos():
-    df = pd.read_csv("DOMICILIO Y TERRITORIAL - Hoja 2.csv")
+    df = pd.read_csv(
+        "DOMICILIO Y TERRITORIAL - Hoja 2.csv",
+        header=None,
+        encoding="utf-8",
+        sep=","
+    )
 
-    # Normalizamos columnas (por si vienen raras)
-    df.columns = [c.strip().upper() for c in df.columns]
+    # Si vino todo en una sola columna
+    if df.shape[1] == 1:
+        df = df[0].str.split(",", expand=True)
 
-    # Esperado:
-    # CALLE | ALTURA | EQUIPO TERRITORIAL
-    df["CALLE_ORIG"] = df["CALLE"].astype(str)
+    df = df.iloc[:, :3]
+    df.columns = ["CALLE", "ALTURA", "EQUIPO"]
+
+    df["CALLE_ORIG"] = df["CALLE"].astype(str).str.strip()
     df["CALLE_NORM"] = df["CALLE_ORIG"].apply(normalizar)
+    df["DESDE"] = df["ALTURA"].apply(parse_desde)
 
     return df
 
-
-# ----------------------------
-# CARGA CSV
-# ----------------------------
 df = cargar_datos()
 
-# ----------------------------
+# -----------------------------
 # UI
-# ----------------------------
+# -----------------------------
 
-calles_unicas = sorted(df["CALLE_ORIG"].unique())
+calles = sorted(df["CALLE_ORIG"].unique())
 
-calle_input = st.selectbox(
+calle = st.selectbox(
     "Calle",
-    options=calles_unicas,
+    calles,
     index=None,
-    placeholder="Empezá a escribir la calle..."
+    placeholder="Empezá a escribir la calle…"
 )
 
-altura_input = st.number_input(
-    "Altura",
-    min_value=0,
-    step=1
-)
-
+altura = st.number_input("Altura", min_value=0, step=1)
 buscar = st.button("Buscar")
 
-# ----------------------------
-# BUSQUEDA
-# ----------------------------
+# -----------------------------
+# BUSQUEDA CORRECTA
+# -----------------------------
 
-if buscar or altura_input:
-    if not calle_input or altura_input == 0:
+if buscar or altura > 0:
+    if not calle or altura == 0:
         st.warning("Completá calle y altura")
     else:
-        calle_norm = normalizar(calle_input)
+        calle_n = normalizar(calle)
+        filas = df[df["CALLE_NORM"] == calle_n].copy()
+
+        # Ordenar por DESDE descendente (más específico primero)
+        filas = filas.sort_values("DESDE", ascending=False)
+
         resultado = None
 
-        filas = df[df["CALLE_NORM"] == calle_norm]
-
-        for _, fila in filas.iterrows():
-            if altura_en_rango(fila["ALTURA"], int(altura_input)):
-                resultado = fila["EQUIPO TERRITORIAL"]
+        for _, f in filas.iterrows():
+            if altura >= f["DESDE"] and coincide_paridad(f["ALTURA"], altura):
+                resultado = f["EQUIPO"]
                 break
 
         if resultado:
