@@ -158,28 +158,30 @@ calle = st.selectbox(
 altura = st.number_input("Altura", min_value=1, step=1)
 
 # -----------------------------
-# BUSQUEDA AUTOMÁTICA
+# BUSQUEDA
 # -----------------------------
-if calle and altura:
-    calle_norm = normalizar(calle)
-    filas = df[df["CALLE_NORM"] == calle_norm]
-
-    resultado = None
-
-    for _, fila in filas.iterrows():
-        if altura_en_rango(fila["ALTURA"], int(altura)):
-            resultado = fila["EQUIPO"]
-            break
-
-    if resultado:
-        st.success(f"Equipo territorial: **{resultado}**")
-
-        integrantes = INTEGRANTES.get(resultado)
-        if integrantes:
-            st.markdown("**Integrantes:**")
-            for i in integrantes:
-                st.write(f"• {i}")
+if buscar:
+    if not calle or not altura:
+        st.warning("Completá calle y altura")
     else:
-        st.error("FUERA DE ÁREA")
+        calle_norm = normalizar(calle)
+        filas = df[df["CALLE_NORM"] == calle_norm]
 
+        resultado = None
+
+        for _, fila in filas.iterrows():
+            if altura_en_rango(fila["ALTURA"], int(altura)):
+                resultado = fila["EQUIPO"]
+                break
+
+        if resultado:
+            st.success(f"Equipo territorial: **{resultado}**")
+
+            integrantes = INTEGRANTES.get(resultado)
+            if integrantes:
+                st.markdown("**Integrantes:**")
+                for i in integrantes:
+                    st.write(f"• {i}")
+        else:
+            st.error("FUERA DE ÁREA")
 
