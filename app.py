@@ -156,6 +156,7 @@ calle = st.selectbox(
 )
 
 altura = st.number_input("Altura", min_value=1, step=1)
+buscar = st.button("Buscar")
 
 # -----------------------------
 # BUSQUEDA
@@ -184,4 +185,5 @@ if buscar:
                     st.write(f"• {i}")
         else:
             st.error("FUERA DE ÁREA")
+
 
