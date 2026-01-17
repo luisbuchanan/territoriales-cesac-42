@@ -148,15 +148,19 @@ df = cargar_datos()
 # -----------------------------
 calles = sorted(df["CALLE_ORIG"].unique())
 
-calle = st.selectbox(
-    "Calle",
-    calles,
-    index=None,
-    placeholder="Empezá a escribir la calle…"
-)
+with st.form("busqueda"):
+    calles = sorted(df["CALLE_ORIG"].unique())
 
-altura = st.number_input("Altura", min_value=1, step=1)
-buscar = st.button("Buscar")
+    calle = st.selectbox(
+        "Calle",
+        calles,
+        index=None,
+        placeholder="Empezá a escribir la calle…"
+    )
+
+    altura = st.number_input("Altura", min_value=1, step=1)
+
+    buscar = st.form_submit_button("Buscar")
 
 # -----------------------------
 # BUSQUEDA
@@ -185,5 +189,6 @@ if buscar:
                     st.write(f"• {i}")
         else:
             st.error("FUERA DE ÁREA")
+
 
 
