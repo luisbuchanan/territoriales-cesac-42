@@ -8,8 +8,13 @@ st.set_page_config(page_title="Territoriales CESAC 42", layout="centered")
 # -----------------------------
 # LOGO
 # -----------------------------
-st.image("logo.png", width=180)
-st.title("Territoriales CESAC 42")
+col1, col2 = st.columns([4, 1])
+
+with col1:
+    st.title("Territoriales CESAC 42")
+
+with col2:
+    st.image("logo.png", width=90)
 
 # -----------------------------
 # INTEGRANTES POR EQUIPO
@@ -145,3 +150,4 @@ if calle and altura:
                 st.write(f"• {i}")
     else:
         st.error("FUERA DE ÁREA")
+
