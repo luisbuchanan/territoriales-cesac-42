@@ -4,6 +4,37 @@ import unicodedata
 import re
 
 st.set_page_config(page_title="Territoriales CESAC 42", layout="centered")
+st.markdown("""
+<style>
+/* Fondo general */
+.stApp {
+    background-color: #F5F6F7;
+}
+
+/* Títulos */
+h1, h2, h3 {
+    color: #003A8F;
+}
+
+/* Botón Buscar */
+div.stButton > button {
+    background-color: #007BC7;
+    color: white;
+    border-radius: 6px;
+    border: none;
+    padding: 0.4em 1.2em;
+}
+
+div.stButton > button:hover {
+    background-color: #005A9E;
+}
+
+/* Inputs */
+input, select {
+    border-radius: 6px;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # -----------------------------
 # LOGO
@@ -14,7 +45,7 @@ with col1:
     st.title("Territoriales CESAC 42")
 
 with col2:
-    st.image("logo.png", width=90)
+    st.image("logo.png", width=70)
 
 # -----------------------------
 # INTEGRANTES POR EQUIPO
@@ -150,4 +181,5 @@ if calle and altura:
                 st.write(f"• {i}")
     else:
         st.error("FUERA DE ÁREA")
+
 
