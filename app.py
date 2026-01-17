@@ -45,7 +45,7 @@ with col1:
     st.title("Territoriales CESAC 42")
 
 with col2:
-    st.image("logo.png", width=70)
+    st.image("logo.png", width=90)
 
 # -----------------------------
 # INTEGRANTES POR EQUIPO
@@ -195,4 +195,5 @@ if buscar:
                     st.write(f"• {i}")
         else:
             st.error("FUERA DE ÁREA")
+
 
