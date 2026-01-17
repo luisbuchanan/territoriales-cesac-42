@@ -158,7 +158,7 @@ with st.form("busqueda"):
         placeholder="Empezá a escribir la calle…"
     )
 
-    altura = st.number_input("Altura", min_value=1, step=1)
+    altura = st.text_input("Altura")
 
     buscar = st.form_submit_button("Buscar")
 
@@ -169,13 +169,19 @@ if buscar:
     if not calle or not altura:
         st.warning("Completá calle y altura")
     else:
+        try:
+            altura_int = int(altura)
+        except:
+            st.warning("La altura debe ser un número")
+            st.stop()
+
         calle_norm = normalizar(calle)
         filas = df[df["CALLE_NORM"] == calle_norm]
 
         resultado = None
 
         for _, fila in filas.iterrows():
-            if altura_en_rango(fila["ALTURA"], int(altura)):
+            if altura_en_rango(fila["ALTURA"], altura_int):
                 resultado = fila["EQUIPO"]
                 break
 
@@ -189,6 +195,4 @@ if buscar:
                     st.write(f"• {i}")
         else:
             st.error("FUERA DE ÁREA")
-
-
 
