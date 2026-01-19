@@ -6,10 +6,6 @@ import re
 st.set_page_config(page_title="Territoriales CESAC 42", layout="centered")
 st.markdown("""
 <style>
-/* Fondo general */
-.stApp {
-    background-color: #F5F6F7;
-}
 
 /* Títulos */
 h1, h2, h3 {
@@ -195,5 +191,6 @@ if buscar:
                     st.write(f"• {i}")
         else:
             st.error("FUERA DE ÁREA")
+
 
 
