@@ -69,7 +69,7 @@ INTEGRANTES = {
     "4 - Sur": [
         "MG: Brenda Garcia dos Santos",
         "Ped: Paula Tasso",
-        "Enf: Ana Davila",
+        "Enf: Ana Dastoli",
         "TS: Juan Burwiel"
     ]
 }
@@ -191,6 +191,7 @@ if buscar:
                     st.write(f"• {i}")
         else:
             st.error("FUERA DE ÁREA")
+
 
 
 
