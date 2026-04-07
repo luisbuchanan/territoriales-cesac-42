@@ -142,7 +142,7 @@ df = cargar_datos()
 # -----------------------------
 # UI
 # -----------------------------
-calles = sorted(df["CALLE_ORIG"].unique())
+calles = sorted(df["CALLE_ORIG"].dropna().astype(str).str.strip().unique())
 
 with st.form("busqueda"):
     calles = sorted(df["CALLE_ORIG"].unique())
